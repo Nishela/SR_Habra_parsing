@@ -14,6 +14,11 @@ POSTS_DIR = os.path.join(BASE_DIR, 'posts')
 
 
 class HabrParser:
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    }
+
     def __init__(self, main_page_url='https://habr.com/ru/all/', tag='a', attr_name='class',
                  attr_value='tm-article-snippet__title-link'):
         self.main_page_url = main_page_url
@@ -24,7 +29,7 @@ class HabrParser:
     def send_request(self, url=''):
         if not url:
             url = self.main_page_url
-        return requests.get(url)
+        return requests.get(url, headers=self.headers)
 
     def get_post_link(self, response):
         soup = bs4.BeautifulSoup(response.text, 'lxml')
