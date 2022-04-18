@@ -131,3 +131,5 @@ dmypy.json
 # Other
 posts/
 posts
+author_content
+posts_content
