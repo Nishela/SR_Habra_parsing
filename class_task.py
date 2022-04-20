@@ -19,17 +19,17 @@ class PostPage:
         self.soup = soup
 
     def get_info(self):
-        title = self.soup.find('h1', {'class': 'tm-article-snippet__title'}).text
+        post_title = self.soup.find('h1', {'class': 'tm-article-snippet__title'}).text
         author_info = self.soup.find('a', {'class': 'tm-user-info__username'})
         author_name = author_info.text.strip()
         author_link = urljoin(self.url, author_info.attrs.get('href', ''))
         content = self.soup.find_all('p')
-        return title, author_name, author_link, content
+        return post_title, author_name, author_link, content
 
     def save_info(self):
-        title, author_name, author_link, content = self.get_info()
-        with open(f'{POSTS_DIR}/{author_name} - {title}.txt', 'w', encoding='utf-8') as file:
-            file.write(f'{title}\n{author_name}\n{author_link}\n')
+        post_title, author_name, author_link, content = self.get_info()
+        with open(f'{POSTS_DIR}/{author_name} - {post_title}.txt', 'w', encoding='utf-8') as file:
+            file.write(f'{post_title}\n{author_name}\n{author_link}\n')
             for line in content:
                 file.write(f'{line.text}\n')
 
@@ -40,16 +40,16 @@ class AuthorPage:
         self.soup = soup
 
     def get_info(self):
-        author_info = self.soup.find('div', {'class': 'tm-user-card__title tm-user-card__title'})
-        childrens = author_info.findChildren(['span', 'a'])
-        author_name = childrens[0].text
-        author_link = childrens[1].attrs.get('href', '')
+        if author_name := self.soup.find('span', {'class': 'tm-user-card__name'}):
+            author_name = author_name.text
+        author_link = self.soup.find('a', {'class': 'tm-user-card__nickname'}).attrs.get('href', '')
+        nickname = self.soup.find('a', {'class': 'tm-user-card__nickname'}).text.strip()
         full_author_link = urljoin(self.url, author_link)
-        return author_name, full_author_link
+        return author_name if author_name else nickname, full_author_link
 
     def save_info(self):
         author_name, author_link = self.get_info()
-        all_posts_titles = self.get_posts_list()
+        all_posts_titles = self.get_posts_titles()
         with open(f'{AUTHOR_INFO_DIR}/{author_name}.txt', 'w', encoding='utf-8') as file:
             file.write(f'{author_name}\n{author_link}\n\n')
             for title in all_posts_titles:
@@ -65,7 +65,7 @@ class AuthorPage:
         new_soup = Chief(self.get_posts_href())()
         return new_soup
 
-    def get_posts_list(self):
+    def get_posts_titles(self):
         posts_soup = self.get_soup()
         all_posts = posts_soup.find_all('a', {'class': 'tm-article-snippet__title-link'})
         all_posts_titles = [post.text for post in all_posts]
@@ -113,6 +113,7 @@ class Chief:
         self.url = url
 
     @deco_delay(delay=1)
+    @deco_status_code(expected_code=200)
     def get_response(self):
         response = requests.get(self.url)
         return response

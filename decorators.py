@@ -2,13 +2,16 @@ import functools
 import time
 
 
-def deco_status_code(func, default=200):
-    @functools.wraps(func)
-    def wrap(*args, **kwargs):
-        result = func(*args, **kwargs)
-        return result if result.status_code == default else None
+def deco_status_code(expected_code):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+            result = func(*args, **kwargs)
+            return result if result.status_code == expected_code else None
 
-    return wrap
+        return wrap
+
+    return decorator
 
 
 def deco_delay(delay):
