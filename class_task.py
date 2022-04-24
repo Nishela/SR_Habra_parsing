@@ -13,6 +13,7 @@ POSTS_DIR = os.path.join(BASE_DIR, 'posts_content')
 AUTHOR_INFO_DIR = os.path.join(BASE_DIR, 'author_content')
 
 
+# TODO: Переделать все к херам
 class PostPage:
     def __init__(self, url, soup):
         self.url = url
@@ -73,7 +74,7 @@ class AuthorPage:
 
 
 class MyTask:
-    done_urls = set()
+    _done_urls = set()
 
     def __init__(self, url, main_domain, delay):
         self.url = url
@@ -86,6 +87,10 @@ class MyTask:
         self.check_url()
         return all_links
 
+    @classmethod
+    def done_urls(cls):
+        return cls._done_urls
+
     def get_hrefs(self, all_links):
         hrefs = {self.href_cleaner(link.attrs.get('href', '')) for link in all_links}
         return hrefs
@@ -97,8 +102,8 @@ class MyTask:
 
     def get_all_links(self):
         self.soup = Chief(self.url)()
-        all_links = self.soup.find_all('a')
-        links = [link for link in self.get_hrefs(all_links) if link not in self.done_urls]
+        all_links = set(self.soup.find_all('a'))
+        links = all_links.difference(self.done_urls())
         return links
 
     def check_url(self):
@@ -108,6 +113,7 @@ class MyTask:
             AuthorPage(self.url, self.soup).save_info()
 
 
+# Переименовать
 class Chief:
     def __init__(self, url):
         self.url = url
