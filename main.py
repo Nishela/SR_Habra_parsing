@@ -1,8 +1,8 @@
 import queue
-
 from urllib.parse import urlparse
 
-from class_task import MyTask
+from my_task import MyTask
+from soup import SoupBuilder
 
 
 class HabraParser:
@@ -21,9 +21,10 @@ class HabraParser:
                 self.my_queue.put(self.get_task(url))
 
     def get_task(self, url):
-        return MyTask(url, self.main_domain, self.delay)
+        return MyTask.run(url, soup_builder, model)
 
 
 if __name__ == '__main__':
+    soup_builder = SoupBuilder()
     parser = HabraParser('https://habr.com/ru/all/')
     parser.start()
