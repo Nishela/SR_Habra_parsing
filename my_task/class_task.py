@@ -1,12 +1,27 @@
-from .base_task import BaseTask
+from dataclasses import dataclass
+from typing import Any
+
 from soup import SoupBuilder
-from models import AuthorPage, PostPage
 
 
+@dataclass
 class MyTask:
+    url: str
+    soup_builder: SoupBuilder
+    model: Any = None
 
-    @classmethod
-    def run(cls, url: str, soup_builder: SoupBuilder, model: AuthorPage | PostPage):
-        soup = soup_builder(url)
-        model.parse(soup)
+    def run(self):
+        soup = self.soup_builder(self.url)
+        if self.model:
+            self.model.parse(soup)
+        return soup
 
+    @staticmethod
+    def get_all_links(soup):
+        all_links = set(soup.find_all('a'))
+        links = all_links.difference(soup.url_cache)
+        return links
+
+    def __call__(self):
+        soup = self.run()
+        return self.get_all_links(soup)
