@@ -15,8 +15,9 @@ class SoupBuilder:
         self.url_cache.add(url)
         return response
 
-    def get_soup(self, response):
-        soup = bs4.BeautifulSoup(self.get_response(response).text, 'lxml')
+    @staticmethod
+    def get_soup(response):
+        soup = bs4.BeautifulSoup(response.text, 'lxml')
         return soup
 
     def __call__(self, url):

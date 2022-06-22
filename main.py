@@ -1,6 +1,7 @@
 import queue
 from urllib.parse import urlparse, urljoin
 
+from models import ModelsManager
 from my_task import MyTask
 from soup import SoupBuilder
 
@@ -18,14 +19,15 @@ class HabraParser:
             task = self.my_queue.get()
             all_urls = task()
             for url in all_urls:
-                full_url = urljoin(self.start_url, url)
-                if self.start_url_netloc == urlparse(full_url).netloc:
-                    self.my_queue.put(self.get_task(full_url))
+                # full_url = urljoin(self.start_url, url)
+                # if self.start_url_netloc == urlparse(full_url).netloc:
+                self.my_queue.put(self.get_task(url))
 
     @staticmethod
     def get_task(url):
-        # TODO: сделать выбор модели по url
-        return MyTask(url, soup_builder)
+        # Не оптимально. Серега заругает. Улучшить
+        model = ModelsManager.get_model(url)
+        return MyTask(url, soup_builder, model)
 
 
 if __name__ == '__main__':
