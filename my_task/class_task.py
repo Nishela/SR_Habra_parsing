@@ -34,7 +34,7 @@ class MyTask:
         filename, *args = data
         with open(filename, 'w', encoding='utf-8') as file:
             for itm in args:
-                file.write(itm)
+                file.write(f'{itm}\n')
 
     def __call__(self):
         soup = self.run()
