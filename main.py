@@ -19,9 +19,8 @@ class HabraParser:
             task = self.my_queue.get()
             all_urls = task()
             for url in all_urls:
-                # full_url = urljoin(self.start_url, url)
-                # if self.start_url_netloc == urlparse(full_url).netloc:
-                self.my_queue.put(self.get_task(url))
+                if url:
+                    self.my_queue.put(self.get_task(url))
 
     @staticmethod
     def get_task(url):
@@ -32,5 +31,5 @@ class HabraParser:
 
 if __name__ == '__main__':
     soup_builder = SoupBuilder()
-    parser = HabraParser('https://habr.com/ru/all/')
+    parser = HabraParser('https://habr.com/ru/post/448782/')
     parser.start()
