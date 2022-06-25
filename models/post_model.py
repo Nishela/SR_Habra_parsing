@@ -6,7 +6,7 @@ from config import POSTS_DIR
 class PostPage:
 
     @classmethod
-    def parse(cls, domain_url, soup) -> tuple:
+    def parse(cls, domain_url, soup, *args) -> tuple:
         title = soup.find('h1', {'class': 'tm-article-snippet__title tm-article-snippet__title_h1'}).text
         author_name, author_url = cls._get_author_info(domain_url, soup)
         content = '\n'.join(line.text.strip() for line in soup.find_all('p'))

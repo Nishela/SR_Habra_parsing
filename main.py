@@ -1,5 +1,5 @@
 import queue
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 
 from models import ModelsManager
 from my_task import MyTask
@@ -24,12 +24,11 @@ class HabraParser:
 
     @staticmethod
     def get_task(url):
-        # Не оптимально. Серега заругает. Улучшить
         model = ModelsManager.get_model(url)
         return MyTask(url, soup_builder, model)
 
 
 if __name__ == '__main__':
     soup_builder = SoupBuilder()
-    parser = HabraParser('https://habr.com/ru/post/448782/')
+    parser = HabraParser('https://habr.com/ru/all/')
     parser.start()

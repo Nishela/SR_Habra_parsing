@@ -1,6 +1,11 @@
 import functools
 import time
 
+__all__ = (
+    'deco_status_code',
+    'deco_delay',
+)
+
 
 def deco_status_code(expected_code):
     def decorator(func):

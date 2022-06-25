@@ -1,6 +1,7 @@
 import bs4
 import requests
 
+from config import my_logger
 from decorators import deco_status_code, deco_delay
 
 
@@ -11,7 +12,9 @@ class SoupBuilder:
     @deco_delay(delay=1)
     @deco_status_code(expected_code=200)
     def get_response(self, url):
+        my_logger.info(f'Иду на {url}')
         response = requests.get(url)
+        my_logger.info(f'Получил данные с {url}')
         self.url_cache.add(url)
         return response
 

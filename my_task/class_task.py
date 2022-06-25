@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import urlparse, urljoin
-
+from config import my_logger
 from soup import SoupBuilder
 
 
@@ -14,7 +14,8 @@ class MyTask:
     def run(self):
         soup = self.soup_builder(self.url)
         if self.model:
-            parsed_data = self.model.parse(self.url, soup)
+            my_logger.info(f'Запущен парсинг данных с {self.url}')
+            parsed_data = self.model.parse(self.url, soup, self.soup_builder)
             self.save(parsed_data)
         return soup
 
@@ -35,6 +36,7 @@ class MyTask:
         with open(filename, 'w', encoding='utf-8') as file:
             for itm in args:
                 file.write(f'{itm}\n')
+        my_logger.info(f'Данные сохранены {filename}')
 
     def __call__(self):
         soup = self.run()
