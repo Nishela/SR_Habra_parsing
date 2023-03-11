@@ -1,4 +1,4 @@
-# Проект по парсингу habr.com - habra_parsing
+# Учебный проект по парсингу habr.com - habra_parsing
 
 Учебный проект по парсингу сайта habr.com с использованием библиотек **requests** и **beautifulsoup**.
 
